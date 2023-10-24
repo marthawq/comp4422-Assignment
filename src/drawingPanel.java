@@ -78,10 +78,18 @@ public class drawingPanel extends JPanel {
                                     if(scaleFactor < 0){
                                         scaleFactor = Math.abs(1/scaleFactor);
                                     }
-                                    int newWidth = (int) (currentRectangle.getWidth() * scaleFactor);
-                                    int newHeight = (int) (currentRectangle.getHeight() * scaleFactor);
+                                    int newWidth = (int) (currentRectangle.width * scaleFactor);
+                                    int newHeight = (int) (currentRectangle.width * scaleFactor);
 
-                                    currentRectangle.setSize(newWidth,newHeight);
+                                    int x = currentRectangle.x;
+                                    int y = currentRectangle.y;
+
+                                    int[] newXPoints = {x,x+newWidth,x+newWidth,x};
+                                    int[] newYPoints = {y,y,y-newHeight,y-newHeight};
+                                    //currentRectangle.setSize(newWidth,newHeight);
+
+                                    currentRectangle = new rectangle(newXPoints,newYPoints,newWidth,newHeight,color, currentRectangle.rotationAngle);
+                                    rectangles.set(i,currentRectangle);
                                 }
                                 if(design.getPositionSettingPanel().getxShear() != 0 || design.getPositionSettingPanel().getyShear() != 0){
                                     int x = currentRectangle.x;
@@ -298,8 +306,8 @@ public class drawingPanel extends JPanel {
             if(rect.rotationAngle != 0){
                 Graphics2D g2d = (Graphics2D) g;
                 AffineTransform oldTransform = g2d.getTransform();
-                double centerX = rect.getX() + rect.getWidth() / 2.0;
-                double centerY = rect.getY() + rect.getHeight() / 2.0;
+                double centerX = rect.x + rect.width / 2.0;
+                double centerY = rect.y + rect.width / 2.0;
 
                 // Apply the rotation
                 g2d.rotate(rect.rotationAngle, centerX, centerY);
@@ -451,13 +459,16 @@ public class drawingPanel extends JPanel {
         int width = Math.abs(pointStart.x - e.getX());
         int height = Math.abs(pointStart.y - e.getY());
 
+        int[] xPoints = {x,x+width,x+width,x};
+        int[] yPoints = {y,y,y+height,y+height};
 
         design.positionSettingPanel.setX(String.valueOf(x));
         design.positionSettingPanel.setY(String.valueOf(y));
         design.positionSettingPanel.setWidth(String.valueOf(width));
         design.positionSettingPanel.setHeight(String.valueOf(height));
-        g.fillRect(x, y, width, height);
-        rectangle newRectangle = new rectangle(x,y,width,height,color,0);
+        //g.fillRect(x, y, width, height);
+        g.fillPolygon(xPoints,yPoints,4);
+        rectangle newRectangle = new rectangle(xPoints,yPoints,width,height,color,0);
         rectangles.add(newRectangle);
         return pointStart = null;
     }
