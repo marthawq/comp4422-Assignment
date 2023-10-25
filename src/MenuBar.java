@@ -40,8 +40,8 @@ public class MenuBar extends JMenuBar {
     private boolean selectPen = false;
 
     JMenuBar Mb;
-    JMenu select,shape,pens,text,drag;
-    JMenuItem rectangle,line,ellipse,picture,pen,triangle,moveShape,adjustShape;
+    JMenu select,shape,pens,text,drag,clear;
+    JMenuItem rectangle,line,ellipse,picture,pen,triangle,moveShape,adjustShape,clearScreen,clearObject;
     MenuBar(drawingPanel Canvas) {
         setCanvas(Canvas);
         setDesign(design);
@@ -51,7 +51,7 @@ public class MenuBar extends JMenuBar {
         pens = new JMenu("Pens");
         text = new JMenu("Text");
         drag = new JMenu("Tools");
-
+        clear = new JMenu("Clear");
 
         moveShape = new JCheckBoxMenuItem("Move Element");
         moveShape.addActionListener(e -> {
@@ -65,6 +65,7 @@ public class MenuBar extends JMenuBar {
             getCanvas().setSelectPen(false);
             getCanvas().setLineMode(false);
             getCanvas().setAdjustMode(false);
+            getCanvas().setClearObjectMode(false);
         });
 
         select.add(moveShape);
@@ -86,6 +87,7 @@ public class MenuBar extends JMenuBar {
             getCanvas().setRectangleMode(false);
             getCanvas().setSelectPen(false);
             getCanvas().setAdjustMode(false);
+            getCanvas().setClearObjectMode(false);
         });
         ellipse = new JCheckBoxMenuItem("Ellipse");
         ellipse.addActionListener(e -> {
@@ -98,9 +100,9 @@ public class MenuBar extends JMenuBar {
             getCanvas().setRectangleMode(false);
             getCanvas().setSelectPen(false);
             getCanvas().setAdjustMode(false);
+            getCanvas().setClearObjectMode(false);
         });
-        //arrow = new JCheckBoxMenuItem("Arrow");
-        //star = new JCheckBoxMenuItem("Star");
+
         picture = new JCheckBoxMenuItem("Insert Picture");
         picture.addActionListener(e ->{
             JFileChooser fileChooser = new JFileChooser();
@@ -117,9 +119,10 @@ public class MenuBar extends JMenuBar {
             getCanvas().setTriangleMode(false);
             getCanvas().setRectangleMode(false);
             getCanvas().setAdjustMode(false);
+            getCanvas().setClearObjectMode(false);
 
         });
-        //pencil = new JCheckBoxMenuItem("Pencil");
+
         triangle = new JCheckBoxMenuItem("Triangle");
         triangle.addActionListener(e -> {
             AbstractButton aButton = (AbstractButton) e.getSource();
@@ -131,8 +134,9 @@ public class MenuBar extends JMenuBar {
             getCanvas().setRectangleMode(false);
             getCanvas().setSelectPen(false);
             getCanvas().setAdjustMode(false);
+            getCanvas().setClearObjectMode(false);
         });
-        //pentagon = new JCheckBoxMenuItem("Pentagon");
+
 
 
         adjustShape = new JCheckBoxMenuItem("Adjust Shape");
@@ -146,21 +150,35 @@ public class MenuBar extends JMenuBar {
             getCanvas().setLineMode(false);
             getCanvas().setRectangleMode(false);
             getCanvas().setSelectPen(false);
+            getCanvas().setClearObjectMode(false);
         });
         drag.add(adjustShape);
 
+
+        clearObject = new JCheckBoxMenuItem("Erase Shape");
+        clearObject.addActionListener(e -> {
+            AbstractButton aButton = (AbstractButton) e.getSource();
+            boolean selected = aButton.getModel().isSelected();
+            getCanvas().setClearObjectMode(selected);
+            getCanvas().setAdjustMode(false);
+            getCanvas().setTriangleMode(false);
+            getCanvas().setMoveMode(false);
+            getCanvas().setEllipseMode(false);
+            getCanvas().setLineMode(false);
+            getCanvas().setRectangleMode(false);
+            getCanvas().setSelectPen(false);
+        });
 
         ButtonGroup shapeSelection = new ButtonGroup();
         shapeSelection.add(rectangle);
         shapeSelection.add(line);
         shapeSelection.add(ellipse);
-        //shapeSelection.add(arrow);
-        //shapeSelection.add(star);
-        //shapeSelection.add(picture);
+
         shapeSelection.add(triangle);
         shapeSelection.add(moveShape);
         shapeSelection.add(pen);
         shapeSelection.add(adjustShape);
+        shapeSelection.add(clearObject);
 
         shape.add(rectangle);
         shape.add(line);
@@ -174,11 +192,14 @@ public class MenuBar extends JMenuBar {
         pens.add(pen);
         //pens.add(pencil);
 
+        clear.add(clearObject);
+
         Mb.add(select);
         Mb.add(shape);
         Mb.add(pens);
         Mb.add(text);
         Mb.add(drag);
+        Mb.add(clear);
 
     }
 

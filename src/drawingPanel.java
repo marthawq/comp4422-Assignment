@@ -28,6 +28,16 @@ public class drawingPanel extends JPanel {
     private boolean moveMode = false;
 
     private boolean adjustMode = false;
+
+    public boolean isClearObjectMode() {
+        return clearObjectMode;
+    }
+
+    public void setClearObjectMode(boolean clearObjectMode) {
+        this.clearObjectMode = clearObjectMode;
+    }
+
+    private boolean clearObjectMode = false;
     ArrayList<rectangle> rectangles = new ArrayList<>();
     ArrayList<Triangle> triangles = new ArrayList<>();
     ArrayList<ellipse> ellipses = new ArrayList<>();
@@ -60,19 +70,23 @@ public class drawingPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
                 if (selectPen || rectangleMode || triangleMode || lineMode || ellipseMode) {
                     pointStart = e.getPoint();
-                } else if(moveMode || adjustMode) {
+                } else if(moveMode || adjustMode || clearObjectMode) {
                     //System.out.println(design.positionSettingPanel.getRotationAngle());
                     if(!rectangles.isEmpty()){
                         for (int i = 0; i < rectangles.size(); i++) {
                             if ((rectangles.get(i)).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentRectangle = rectangles.get(i);
-                                System.out.println("It's rectangle");
-
+                                if(clearObjectMode){
+                                    rectangles.remove(currentRectangle);
+                                    design.positionSettingPanel.setX("");
+                                    design.positionSettingPanel.setY("");
+                                    design.positionSettingPanel.setWidth("");
+                                    design.positionSettingPanel.setHeight("");
+                                }
                                 if (design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentRectangle.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
-                                //currentRectangle.scaleFactor = design.getPositionSettingPanel().getScaleFactor();
                                 if (design.getPositionSettingPanel().getScaleFactor() != 0 && adjustMode) {
                                     double scaleFactor = design.getPositionSettingPanel().getScaleFactor();
                                     if (scaleFactor < 0) {
@@ -112,7 +126,7 @@ public class drawingPanel extends JPanel {
                                     };
 
                                     rectangles.remove(currentRectangle);
-                                    currentPolygon = new polygon(xPoints, yPoints, color, width, height, 0); // Represent the sheared rectangle as a polygon
+                                    currentPolygon = new polygon(xPoints, yPoints, currentRectangle.color, width, height, 0); // Represent the sheared rectangle as a polygon
                                     polygons.add(currentPolygon);
                                     design.positionSettingPanel.setX(String.valueOf(currentPolygon.xpoints[3]));
                                     design.positionSettingPanel.setY(String.valueOf(currentPolygon.ypoints[3]));
@@ -128,7 +142,14 @@ public class drawingPanel extends JPanel {
                             if (triangles.get(i).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentTriangle = triangles.get(i);
-                                System.out.println("It's triangle");
+                                //System.out.println("It's triangle");
+                                if(clearObjectMode){
+                                    triangles.remove(currentTriangle);
+                                    design.positionSettingPanel.setX("");
+                                    design.positionSettingPanel.setY("");
+                                    design.positionSettingPanel.setWidth("");
+                                    design.positionSettingPanel.setHeight("");
+                                }
                                 if(design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentTriangle.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
@@ -148,7 +169,7 @@ public class drawingPanel extends JPanel {
                                     }
                                     int newWidth = (int)(currentTriangle.width*scaleFactor);
                                     int newHeight = (int)(currentTriangle.height*scaleFactor);
-                                    currentTriangle = new Triangle(scaledXPoints, scaledYPoints, currentTriangle.npoints,color,newWidth,newHeight,(int)(currentTriangle.rotationAngle));
+                                    currentTriangle = new Triangle(scaledXPoints, scaledYPoints, currentTriangle.npoints,currentTriangle.color,newWidth,newHeight,(int)(currentTriangle.rotationAngle));
                                     triangles.set(i,currentTriangle);
                                     design.positionSettingPanel.setX(String.valueOf(currentTriangle.xpoints[0]));
                                     design.positionSettingPanel.setY(String.valueOf(currentTriangle.ypoints[0]));
@@ -185,6 +206,13 @@ public class drawingPanel extends JPanel {
                             if (ellipses.get(i).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentEllipse = ellipses.get(i);
+                                if(clearObjectMode){
+                                    ellipses.remove(currentEllipse);
+                                    design.positionSettingPanel.setX("");
+                                    design.positionSettingPanel.setY("");
+                                    design.positionSettingPanel.setWidth("");
+                                    design.positionSettingPanel.setHeight("");
+                                }
                                 if(design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentEllipse.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
@@ -213,6 +241,13 @@ public class drawingPanel extends JPanel {
                             if (lines.get(i).ptSegDist(e.getPoint()) < 450.0) {
                                 lastDragPoint = e.getPoint();
                                 currentLine = lines.get(i);
+                                if(clearObjectMode){
+                                    lines.remove(currentLine);
+                                    design.positionSettingPanel.setX("");
+                                    design.positionSettingPanel.setY("");
+                                    design.positionSettingPanel.setWidth("");
+                                    design.positionSettingPanel.setHeight("");
+                                }
                                 if(design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentLine.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
@@ -245,7 +280,14 @@ public class drawingPanel extends JPanel {
                             if ((polygons.get(i)).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentPolygon = polygons.get(i);
-                                System.out.println("It's me");
+                                if(clearObjectMode){
+                                    polygons.remove(currentPolygon);
+                                    design.positionSettingPanel.setX("");
+                                    design.positionSettingPanel.setY("");
+                                    design.positionSettingPanel.setWidth("");
+                                    design.positionSettingPanel.setHeight("");
+                                }
+                                //System.out.println("It's me");
                                 if (design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentPolygon.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
@@ -586,11 +628,11 @@ public class drawingPanel extends JPanel {
         int width = Math.abs(pointStart.x - e.getX());
         int height = Math.abs(pointStart.y - e.getY());
 
-
         design.positionSettingPanel.setX(String.valueOf(x));
         design.positionSettingPanel.setY(String.valueOf(y));
         design.positionSettingPanel.setWidth(String.valueOf(width));
         design.positionSettingPanel.setHeight(String.valueOf(height));
+
         g.fillRect(x, y, width, height);
         rectangle newRectangle = new rectangle(x,y,width,height,color,0);
         rectangles.add(newRectangle);
