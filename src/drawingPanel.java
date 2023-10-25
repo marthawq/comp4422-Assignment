@@ -32,12 +32,11 @@ public class drawingPanel extends JPanel {
     ArrayList<Triangle> triangles = new ArrayList<>();
     ArrayList<ellipse> ellipses = new ArrayList<>();
     ArrayList<line> lines = new ArrayList<>();
-    ArrayList<Polygon> polygons = new ArrayList<>();
+    ArrayList<polygon> polygons = new ArrayList<>();
     rectangle currentRectangle;
     Triangle currentTriangle;
     ellipse currentEllipse;
-
-    Polygon currentPolygon;
+    polygon currentPolygon;
     line currentLine;
     //double rotationAngle = 0;
     private Color color = Color.BLACK;
@@ -68,53 +67,57 @@ public class drawingPanel extends JPanel {
                             if ((rectangles.get(i)).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentRectangle = rectangles.get(i);
-                                //System.out.println("It's me");
-                                if(design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode){
+                                System.out.println("It's rectangle");
+
+                                if (design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentRectangle.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
                                 //currentRectangle.scaleFactor = design.getPositionSettingPanel().getScaleFactor();
-                                if(design.getPositionSettingPanel().getScaleFactor() != 0 && adjustMode){
+                                if (design.getPositionSettingPanel().getScaleFactor() != 0 && adjustMode) {
                                     double scaleFactor = design.getPositionSettingPanel().getScaleFactor();
-                                    if(scaleFactor < 0){
-                                        scaleFactor = Math.abs(1/scaleFactor);
+                                    if (scaleFactor < 0) {
+                                        scaleFactor = Math.abs(1 / scaleFactor);
                                     }
-                                    int newWidth = (int) (currentRectangle.width * scaleFactor);
-                                    int newHeight = (int) (currentRectangle.width * scaleFactor);
+                                    int newWidth = (int) (currentRectangle.getWidth() * scaleFactor);
+                                    int newHeight = (int) (currentRectangle.getHeight() * scaleFactor);
 
-                                    int x = currentRectangle.x;
-                                    int y = currentRectangle.y;
-
-                                    int[] newXPoints = {x,x+newWidth,x+newWidth,x};
-                                    int[] newYPoints = {y,y,y-newHeight,y-newHeight};
-                                    //currentRectangle.setSize(newWidth,newHeight);
-
-                                    currentRectangle = new rectangle(newXPoints,newYPoints,newWidth,newHeight,color, currentRectangle.rotationAngle);
-                                    rectangles.set(i,currentRectangle);
+                                    currentRectangle.setSize(newWidth, newHeight);
+                                    design.positionSettingPanel.setX(String.valueOf(currentRectangle.x));
+                                    design.positionSettingPanel.setY(String.valueOf(currentRectangle.y));
+                                    design.positionSettingPanel.setWidth(String.valueOf(newWidth));
+                                    design.positionSettingPanel.setHeight(String.valueOf(newHeight));
                                 }
-                                if(design.getPositionSettingPanel().getxShear() != 0 || design.getPositionSettingPanel().getyShear() != 0){
+                                if ((design.getPositionSettingPanel().getxShear() != 0 || design.getPositionSettingPanel().getyShear() != 0) && adjustMode) {
                                     int x = currentRectangle.x;
                                     int y = currentRectangle.y;
                                     int width = currentRectangle.width;
                                     int height = currentRectangle.height;
 
-                                    int shearX = design.getPositionSettingPanel().getxShear();
-                                    int shearY = design.getPositionSettingPanel().getyShear();
+                                    double shearX = design.getPositionSettingPanel().getxShear();
+                                    double shearY = design.getPositionSettingPanel().getyShear();
+//                                    System.out.println(shearX);
+//                                    System.out.println(shearY);
                                     int[] xPoints = {
-                                            x,
-                                            x + width + (shearY * height),
-                                            x + width + (shearY * height) - (shearX * height),
-                                            x - (shearX * height)
+                                            x + (int) (shearX * (y + height)),
+                                            x + width + (int) (shearX * (y + height)),
+                                            x + width + (int) (shearX * y),
+                                            x + (int) (shearX * y)
                                     };
 
                                     int[] yPoints = {
-                                            y,
-                                            y - (shearX * width),
-                                            y + height - (shearX * width),
-                                            y + height
+                                            y + (int) (shearY * (x + width)),
+                                            y + (int) (shearY * x),
+                                            y + height + (int) (shearY * (x + width)),
+                                            y + height + (int) (shearY * x)
                                     };
+
                                     rectangles.remove(currentRectangle);
-                                    currentPolygon = new Polygon(xPoints, yPoints, 4); // Represent the sheared rectangle as a polygon
+                                    currentPolygon = new polygon(xPoints, yPoints, color, width, height, 0); // Represent the sheared rectangle as a polygon
                                     polygons.add(currentPolygon);
+                                    design.positionSettingPanel.setX(String.valueOf(currentPolygon.xpoints[3]));
+                                    design.positionSettingPanel.setY(String.valueOf(currentPolygon.ypoints[3]));
+                                    design.positionSettingPanel.setWidth(String.valueOf(width));
+                                    design.positionSettingPanel.setHeight(String.valueOf(height));
                                 }
                                 repaint();
                             }
@@ -125,6 +128,7 @@ public class drawingPanel extends JPanel {
                             if (triangles.get(i).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentTriangle = triangles.get(i);
+                                System.out.println("It's triangle");
                                 if(design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentTriangle.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
@@ -146,6 +150,31 @@ public class drawingPanel extends JPanel {
                                     int newHeight = (int)(currentTriangle.height*scaleFactor);
                                     currentTriangle = new Triangle(scaledXPoints, scaledYPoints, currentTriangle.npoints,color,newWidth,newHeight,(int)(currentTriangle.rotationAngle));
                                     triangles.set(i,currentTriangle);
+                                    design.positionSettingPanel.setX(String.valueOf(currentTriangle.xpoints[0]));
+                                    design.positionSettingPanel.setY(String.valueOf(currentTriangle.ypoints[0]));
+                                    design.positionSettingPanel.setWidth(String.valueOf(newWidth));
+                                    design.positionSettingPanel.setHeight(String.valueOf(newHeight));
+                                }
+                                if((design.getPositionSettingPanel().getyShear() != 0 || design.getPositionSettingPanel().getxShear() != 0) && adjustMode){
+                                    int x = currentTriangle.xpoints[0];
+                                    int y = currentTriangle.ypoints[0];
+
+                                    double shearX = design.getPositionSettingPanel().getxShear();
+                                    double shearY = design.getPositionSettingPanel().getyShear();
+
+                                    currentTriangle.xpoints[0] = currentTriangle.xpoints[0] + (int)(shearX*y);
+                                    currentTriangle.xpoints[1] = currentTriangle.xpoints[1] + (int)(shearX*currentTriangle.ypoints[1]);
+                                    currentTriangle.xpoints[2] = currentTriangle.xpoints[2] + (int)(shearX*currentTriangle.ypoints[2]);
+
+                                    currentTriangle.ypoints[0] = currentTriangle.ypoints[0] + (int)(shearY*x);
+                                    currentTriangle.ypoints[1] = currentTriangle.ypoints[1] + (int)(shearY*currentTriangle.xpoints[1]);
+                                    currentTriangle.ypoints[2] = currentTriangle.ypoints[2] + (int)(shearY*currentTriangle.xpoints[2]);
+
+                                    design.positionSettingPanel.setX(String.valueOf(currentTriangle.xpoints[0]));
+                                    design.positionSettingPanel.setY(String.valueOf(currentTriangle.ypoints[0]));
+                                    design.positionSettingPanel.setWidth(String.valueOf(currentTriangle.width));
+                                    design.positionSettingPanel.setHeight(String.valueOf(currentTriangle.height));
+
                                 }
                                 repaint();
                             }
@@ -169,6 +198,10 @@ public class drawingPanel extends JPanel {
 
                                     currentEllipse = new ellipse(currentEllipse.x, currentEllipse.y,newWidth,newHeight, currentEllipse.rotationAngle);
                                     ellipses.set(i,currentEllipse);
+                                    design.positionSettingPanel.setX(String.valueOf(currentEllipse.x));
+                                    design.positionSettingPanel.setY(String.valueOf(currentEllipse.y));
+                                    design.positionSettingPanel.setWidth(String.valueOf(newWidth));
+                                    design.positionSettingPanel.setHeight(String.valueOf(newHeight));
                                 }
                                 repaint();
                             }
@@ -193,21 +226,83 @@ public class drawingPanel extends JPanel {
                                     int newX2 = (int)(currentLine.x2 * scaleFactor);
                                     int newY2 = (int)(currentLine.y2 * scaleFactor);
 
-                                    System.out.println(currentLine.x1);
-                                    System.out.println(currentLine.y1);
-                                    System.out.println(currentLine.x2);
-                                    System.out.println(currentLine.y2);
-
-                                    //currentLine.setLine(newX1, newY1, newX2, newY2);
                                     currentLine.x1 = newX1;
                                     currentLine.x2 = newX2;
                                     currentLine.y1 = newY1;
                                     currentLine.y2 = newY2;
                                     lines.set(i,currentLine);
+                                    design.positionSettingPanel.setX(String.valueOf(newX1));
+                                    design.positionSettingPanel.setY(String.valueOf(newX2));
+                                    design.positionSettingPanel.setWidth(String.valueOf(Math.round(Math.sqrt((newX2-newX1)*(newX2-newX1) + (newY2 - newY1)*(newY2 - newY1)))));
+                                    design.positionSettingPanel.setHeight(String.valueOf("0"));
                                 }
                                 repaint();
                             }
                         }
+                    }
+                    if(!polygons.isEmpty()){
+                        for(int i = 0; i < polygons.size(); i++){
+                            if ((polygons.get(i)).contains(e.getPoint())) {
+                                lastDragPoint = e.getPoint();
+                                currentPolygon = polygons.get(i);
+                                System.out.println("It's me");
+                                if (design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
+                                    currentPolygon.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
+                                }
+                                if(design.getPositionSettingPanel().getScaleFactor() != 0 && adjustMode){
+                                    double scaleFactor = design.getPositionSettingPanel().getScaleFactor();
+                                    if(scaleFactor < 0){
+                                        scaleFactor = Math.abs(1/scaleFactor);
+                                    }
+                                    int[] scaledXPoints = new int[currentPolygon.xpoints.length];
+                                    int[] scaledYPoints = new int[currentPolygon.ypoints.length];
+                                    for(int j = 0; j < 4; j++){
+                                        scaledXPoints[j] = (int)(currentPolygon.xpoints[j]*scaleFactor);
+                                        scaledYPoints[j] = (int)(currentPolygon.ypoints[j]*scaleFactor);
+                                    }
+                                    int newWidth = (int) (currentPolygon.width * scaleFactor);
+                                    int newHeight = (int) (currentRectangle.height * scaleFactor);
+
+
+                                    currentPolygon = new polygon(scaledXPoints,scaledYPoints,color,newWidth,newHeight,(int)currentPolygon.rotationAngle);
+                                    polygons.set(i,currentPolygon);
+                                }
+                                if((design.getPositionSettingPanel().getxShear() != 0 || design.getPositionSettingPanel().getyShear() != 0) && adjustMode){
+                                    int x = currentPolygon.xpoints[0];
+                                    int y = currentPolygon.ypoints[0];
+                                    int width = currentRectangle.width;
+                                    int height = currentRectangle.height;
+
+                                    double shearX = design.getPositionSettingPanel().getxShear();
+                                    double shearY = design.getPositionSettingPanel().getyShear();
+//                                    System.out.println(shearX);
+//                                    System.out.println(shearY);
+                                    int[] xPoints = {
+                                            x + (int)(shearX * (y + height)),
+                                            x + width + (int)(shearX * (y + height)),
+                                            x + width + (int)(shearX * y),
+                                            x + (int)(shearX * y)
+                                    };
+
+                                    int[] yPoints = {
+                                            y + (int)(shearY * (x + width)),
+                                            y + (int)(shearY * x),
+                                            y + height + (int)(shearY * (x + width)),
+                                            y + height + (int)(shearY * x)
+                                    };
+
+
+                                    currentPolygon = new polygon(xPoints, yPoints,color,width,height,0); // Represent the sheared rectangle as a polygon
+                                    polygons.set(i,currentPolygon);
+                                    design.positionSettingPanel.setX(String.valueOf(currentPolygon.xpoints[0]));
+                                    design.positionSettingPanel.setY(String.valueOf(currentPolygon.ypoints[0]));
+                                    design.positionSettingPanel.setWidth(String.valueOf(width));
+                                    design.positionSettingPanel.setHeight(String.valueOf(height));
+                                }
+                                repaint();
+                            }
+                        }
+
                     }
                 }
             }
@@ -233,7 +328,7 @@ public class drawingPanel extends JPanel {
         });
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
-                if(selectPen && !rectangleMode) {
+                if(selectPen) {
                     pointEnd = e.getPoint();
                     Graphics2D g = (Graphics2D) getGraphics();
                     color = design.getColorSettingPanel().getSelectedColor();
@@ -243,7 +338,7 @@ public class drawingPanel extends JPanel {
                         pointStart = pointEnd;
                     }
                 } else if(moveMode){
-                    if(currentRectangle != null && lastDragPoint != null){
+                    if(currentRectangle != null && lastDragPoint != null && currentRectangle.contains(e.getPoint())){
                         //moveRect(lastDragPoint,currentRectangle,e);
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
@@ -254,7 +349,8 @@ public class drawingPanel extends JPanel {
                         design.positionSettingPanel.setWidth(String.valueOf(currentRectangle.width));
                         design.positionSettingPanel.setHeight(String.valueOf(currentRectangle.height));
                         repaint();
-                    } else if(currentTriangle != null && lastDragPoint != null){
+                    }
+                    if(currentTriangle != null && lastDragPoint != null && currentTriangle.contains(e.getPoint())){
                         //moveTri(lastDragPoint,currentTriangle,e);
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
@@ -265,7 +361,8 @@ public class drawingPanel extends JPanel {
                         design.positionSettingPanel.setWidth(String.valueOf(currentTriangle.width));
                         design.positionSettingPanel.setHeight(String.valueOf(currentTriangle.height));
                         repaint();
-                    } else if(currentEllipse != null && lastDragPoint != null){
+                    }
+                    if(currentEllipse != null && lastDragPoint != null && currentEllipse.contains(e.getPoint())){
                         //moveEllipse(lastDragPoint,currentEllipse,e);
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
@@ -277,9 +374,11 @@ public class drawingPanel extends JPanel {
                         design.positionSettingPanel.setWidth(String.valueOf(currentEllipse.width));
                         design.positionSettingPanel.setHeight(String.valueOf(currentEllipse.height));
                         repaint();
-                    } else if(currentLine != null && lastDragPoint != null){
+                    }
+                    if(currentLine != null && lastDragPoint != null && currentLine.contains(e.getPoint())){
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
+
                         currentLine.x1 += dx;
                         currentLine.y1 += dy;
                         currentLine.x2 += dx;
@@ -291,6 +390,22 @@ public class drawingPanel extends JPanel {
                         design.positionSettingPanel.setY(String.valueOf(currentLine.y1));
                         design.positionSettingPanel.setWidth(String.valueOf(Math.round(Math.sqrt(deltaX*deltaX + deltaY*deltaY))));
                         design.positionSettingPanel.setHeight(String.valueOf("0"));
+                        repaint();
+                    }
+                    if(currentPolygon != null && lastDragPoint != null && currentPolygon.contains(e.getPoint())){
+                        int dx = e.getX() - lastDragPoint.x;
+                        int dy = e.getY() - lastDragPoint.y;
+
+//                        System.out.println(dx);
+//                        System.out.println(dy);
+
+                        currentPolygon.translate(dx,dy);
+
+                        lastDragPoint = e.getPoint();
+                        design.positionSettingPanel.setX(String.valueOf(currentPolygon.xpoints[0]));
+                        design.positionSettingPanel.setY(String.valueOf(currentPolygon.ypoints[0]));
+                        design.positionSettingPanel.setWidth(String.valueOf(currentPolygon.width));
+                        design.positionSettingPanel.setHeight(String.valueOf(currentPolygon.height));
                         repaint();
                     }
                 }
@@ -306,8 +421,8 @@ public class drawingPanel extends JPanel {
             if(rect.rotationAngle != 0){
                 Graphics2D g2d = (Graphics2D) g;
                 AffineTransform oldTransform = g2d.getTransform();
-                double centerX = rect.x + rect.width / 2.0;
-                double centerY = rect.y + rect.width / 2.0;
+                double centerX = rect.getX() + rect.getWidth() / 2.0;
+                double centerY = rect.getY() + rect.getHeight() / 2.0;
 
                 // Apply the rotation
                 g2d.rotate(rect.rotationAngle, centerX, centerY);
@@ -320,10 +435,22 @@ public class drawingPanel extends JPanel {
                 g.fillRect(rect.x,rect.y,rect.width,rect.height);
             }
         }
-        for(Polygon poly : polygons){
-            g.setColor(color);
-            //g.drawPolygon(poly);
-            g.fillPolygon(poly);
+        for(polygon poly : polygons){
+            if(poly.rotationAngle != 0){
+                Graphics2D g2d = (Graphics2D) g;
+                AffineTransform oldTransform = g2d.getTransform();
+
+                double centerX = (poly.xpoints[0] + poly.xpoints[1] + poly.xpoints[2] + poly.xpoints[3])/4.0;
+                double centerY = (poly.ypoints[0] + poly.ypoints[1] + poly.ypoints[2] + poly.ypoints[3])/4.0;
+
+                g2d.rotate(poly.rotationAngle, centerX, centerY);
+                g2d.fill(poly);
+                g2d.setTransform(oldTransform);
+            } else {
+                g.setColor(poly.color);
+                //g.drawPolygon(poly);
+                g.fillPolygon(poly.xpoints,poly.ypoints,4);
+            }
         }
         for (Triangle triangle : triangles){
             if(triangle.rotationAngle != 0){
@@ -459,18 +586,16 @@ public class drawingPanel extends JPanel {
         int width = Math.abs(pointStart.x - e.getX());
         int height = Math.abs(pointStart.y - e.getY());
 
-        int[] xPoints = {x,x+width,x+width,x};
-        int[] yPoints = {y,y,y+height,y+height};
 
         design.positionSettingPanel.setX(String.valueOf(x));
         design.positionSettingPanel.setY(String.valueOf(y));
         design.positionSettingPanel.setWidth(String.valueOf(width));
         design.positionSettingPanel.setHeight(String.valueOf(height));
-        //g.fillRect(x, y, width, height);
-        g.fillPolygon(xPoints,yPoints,4);
-        rectangle newRectangle = new rectangle(xPoints,yPoints,width,height,color,0);
+        g.fillRect(x, y, width, height);
+        rectangle newRectangle = new rectangle(x,y,width,height,color,0);
         rectangles.add(newRectangle);
-        return pointStart = null;
+        pointStart = null;
+        return pointStart;
     }
 
     private Point drawTriangle(Point pointStart, MouseEvent e){

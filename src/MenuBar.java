@@ -52,6 +52,7 @@ public class MenuBar extends JMenuBar {
         text = new JMenu("Text");
         drag = new JMenu("Tools");
 
+
         moveShape = new JCheckBoxMenuItem("Move Element");
         moveShape.addActionListener(e -> {
             AbstractButton aButton = (AbstractButton) e.getSource();

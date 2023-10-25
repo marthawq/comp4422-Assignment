@@ -19,8 +19,8 @@ public class positionPanel extends JPanel {
     private double scaleFactor;
 
 
-    private int xShear;
-    private int yShear;
+    private double xShear;
+    private double yShear;
 
 
 
@@ -78,12 +78,12 @@ public class positionPanel extends JPanel {
         sXAxisLabel = new JLabel("Shear Along x");
         sXAxisValue = new JTextField("0");
         sXAxisValue.addActionListener(e->{
-            xShear = Integer.parseInt(sXAxisValue.getText());
+            xShear = Double.parseDouble(sXAxisValue.getText());
         });
         sYAxisLabel = new JLabel("Shear Along y");
         sYAxisValue = new JTextField("0");
         sXAxisValue.addActionListener(e->{
-            yShear = Integer.parseInt(sYAxisValue.getText());
+            yShear = Double.parseDouble(sYAxisValue.getText());
         });
         add(sXAxisLabel);
         add(sXAxisValue);
@@ -121,7 +121,7 @@ public class positionPanel extends JPanel {
         this.scaleFactor = scaleFactor;
     }
 
-    public int getxShear() {
+    public double getxShear() {
         return xShear;
     }
 
@@ -129,7 +129,7 @@ public class positionPanel extends JPanel {
         this.xShear = xShear;
     }
 
-    public int getyShear() {
+    public double getyShear() {
         return yShear;
     }
 
