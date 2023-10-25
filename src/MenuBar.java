@@ -29,15 +29,7 @@ public class MenuBar extends JMenuBar {
         return Mb;
     }
 
-    public boolean isSelectPen() {
-        return selectPen;
-    }
 
-    public void setSelectPen(boolean selectPen) {
-        this.selectPen = selectPen;
-    }
-
-    private boolean selectPen = false;
 
     JMenuBar Mb;
     JMenu select,shape,pens,text,drag,clear;
@@ -57,7 +49,6 @@ public class MenuBar extends JMenuBar {
         moveShape.addActionListener(e -> {
             AbstractButton aButton = (AbstractButton) e.getSource();
             boolean selected = aButton.getModel().isSelected();
-            //System.out.println(selected);
             getCanvas().setMoveMode(selected);
             getCanvas().setEllipseMode(false);
             getCanvas().setTriangleMode(false);
@@ -183,14 +174,9 @@ public class MenuBar extends JMenuBar {
         shape.add(rectangle);
         shape.add(line);
         shape.add(ellipse);
-        //shape.add(arrow);
-        //shape.add(star);
-        //shape.add(picture);
-        //shape.add(pentagon);
         shape.add(triangle);
 
         pens.add(pen);
-        //pens.add(pencil);
 
         clear.add(clearObject);
 

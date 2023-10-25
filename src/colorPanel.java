@@ -35,7 +35,6 @@ public class colorPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Color initalcolor = Color.WHITE;
                 setSelectedColor(JColorChooser.showDialog(TextColor,"select a color",initalcolor));
-                //System.out.println(color.getBlue());
                 TextColorField.setText(Integer.toHexString(selectedColor.getRGB()).toUpperCase());
             }
         });

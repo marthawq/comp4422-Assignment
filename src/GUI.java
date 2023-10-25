@@ -25,7 +25,6 @@ public class GUI{
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //f.setUndecorated(true);
     }
 
 

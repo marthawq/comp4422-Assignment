@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class positionPanel extends JPanel {
-    private JLabel xLabel,yLabel,hLabel,wLabel,aLabel,rLabel,sXAxisLabel,sYAxisLabel;
+    private JLabel xLabel, yLabel, hLabel, wLabel, aLabel, rLabel, sXAxisLabel, sYAxisLabel;
     private JTextField x;
     private JTextField y;
     private JTextField h;
@@ -23,13 +23,13 @@ public class positionPanel extends JPanel {
     private double yShear;
 
 
-
     private JTextField angle;
-    positionPanel(){
-        //panel for adjusting size and position
-        super(new GridLayout(4,4));
 
-        setBackground(new Color(245,245,245));
+    positionPanel() {
+        //panel for adjusting size and position
+        super(new GridLayout(4, 4));
+
+        setBackground(new Color(245, 245, 245));
         xLabel = new JLabel("x:");
         x = new JTextField();
 
@@ -57,7 +57,7 @@ public class positionPanel extends JPanel {
         scale = new JTextField();
         scale.setText("0");
         scale.setEditable(true);
-        scale.addActionListener(e ->{
+        scale.addActionListener(e -> {
             scaleFactor = Double.parseDouble(scale.getText());
         });
         add(rLabel);
@@ -77,12 +77,12 @@ public class positionPanel extends JPanel {
 
         sXAxisLabel = new JLabel("Shear Along x");
         sXAxisValue = new JTextField("0");
-        sXAxisValue.addActionListener(e->{
+        sXAxisValue.addActionListener(e -> {
             xShear = Double.parseDouble(sXAxisValue.getText());
         });
         sYAxisLabel = new JLabel("Shear Along y");
         sYAxisValue = new JTextField("0");
-        sXAxisValue.addActionListener(e->{
+        sXAxisValue.addActionListener(e -> {
             yShear = Double.parseDouble(sYAxisValue.getText());
         });
         add(sXAxisLabel);
@@ -93,47 +93,39 @@ public class positionPanel extends JPanel {
 
     }
 
-    public void setX(String data){
+    public void setX(String data) {
         x.setText(data);
     }
-    public void setY(String data){
+
+    public void setY(String data) {
         y.setText(data);
     }
-    public void setHeight(String data){
+
+    public void setHeight(String data) {
         h.setText(data);
     }
 
-    public void setWidth(String data){
+    public void setWidth(String data) {
         w.setText(data);
     }
+
     public int getRotationAngle() {
         return rotationAngle;
     }
 
-    public void setRotationAngle(int rotationAngle) {
-        this.rotationAngle = rotationAngle;
-    }
+
     public double getScaleFactor() {
         return scaleFactor;
     }
 
-    public void setScaleFactor(double scaleFactor) {
-        this.scaleFactor = scaleFactor;
-    }
 
     public double getxShear() {
         return xShear;
     }
 
-    public void setxShear(int xShear) {
-        this.xShear = xShear;
-    }
 
     public double getyShear() {
         return yShear;
     }
 
-    public void setyShear(int yShear) {
-        this.yShear = yShear;
-    }
 }

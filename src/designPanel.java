@@ -7,25 +7,16 @@ public class designPanel extends JPanel {
         return positionSettingPanel;
     }
 
-    public void setPositionSettingPanel(positionPanel positionSettingPanel) {
-        this.positionSettingPanel = positionSettingPanel;
-    }
 
     public strokePanel getStrokeSettingPanel() {
         return strokeSettingPanel;
     }
 
-    public void setStrokeSettingPanel(strokePanel strokeSettingPanel) {
-        this.strokeSettingPanel = strokeSettingPanel;
-    }
 
     public colorPanel getColorSettingPanel() {
         return colorSettingPanel;
     }
 
-    public void setColorSettingPanel(colorPanel colorSettingPanel) {
-        this.colorSettingPanel = colorSettingPanel;
-    }
 
     positionPanel positionSettingPanel;
     strokePanel strokeSettingPanel;

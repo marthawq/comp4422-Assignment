@@ -4,9 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class drawingPanel extends JPanel {
     Point pointStart = null;
@@ -29,13 +27,7 @@ public class drawingPanel extends JPanel {
 
     private boolean adjustMode = false;
 
-    public boolean isClearObjectMode() {
-        return clearObjectMode;
-    }
 
-    public void setClearObjectMode(boolean clearObjectMode) {
-        this.clearObjectMode = clearObjectMode;
-    }
 
     private boolean clearObjectMode = false;
     ArrayList<rectangle> rectangles = new ArrayList<>();
@@ -48,12 +40,8 @@ public class drawingPanel extends JPanel {
     ellipse currentEllipse;
     polygon currentPolygon;
     line currentLine;
-    //double rotationAngle = 0;
     private Color color = Color.BLACK;
 
-    public designPanel getDesign() {
-        return design;
-    }
 
     public void setDesign(designPanel design) {
         this.design = design;
@@ -63,15 +51,12 @@ public class drawingPanel extends JPanel {
 
 
     drawingPanel(designPanel design){
-        //setBackground(new Color(245,245,245));
         setDesign(design);
-        //setPreferredSize(new Dimension(600,0));
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 if (selectPen || rectangleMode || triangleMode || lineMode || ellipseMode) {
                     pointStart = e.getPoint();
                 } else if(moveMode || adjustMode || clearObjectMode) {
-                    //System.out.println(design.positionSettingPanel.getRotationAngle());
                     if(!rectangles.isEmpty()){
                         for (int i = 0; i < rectangles.size(); i++) {
                             if ((rectangles.get(i)).contains(e.getPoint())) {
@@ -109,8 +94,6 @@ public class drawingPanel extends JPanel {
 
                                     double shearX = design.getPositionSettingPanel().getxShear();
                                     double shearY = design.getPositionSettingPanel().getyShear();
-//                                    System.out.println(shearX);
-//                                    System.out.println(shearY);
                                     int[] xPoints = {
                                             x + (int) (shearX * (y + height)),
                                             x + width + (int) (shearX * (y + height)),
@@ -142,7 +125,6 @@ public class drawingPanel extends JPanel {
                             if (triangles.get(i).contains(e.getPoint())) {
                                 lastDragPoint = e.getPoint();
                                 currentTriangle = triangles.get(i);
-                                //System.out.println("It's triangle");
                                 if(clearObjectMode){
                                     triangles.remove(currentTriangle);
                                     design.positionSettingPanel.setX("");
@@ -155,14 +137,11 @@ public class drawingPanel extends JPanel {
                                 }
                                 if(design.getPositionSettingPanel().getScaleFactor() != 0 && adjustMode){
                                     double scaleFactor = design.getPositionSettingPanel().getScaleFactor();
-                                    //System.out.println(scaleFactor);
                                     if(scaleFactor < 0){
                                         scaleFactor = Math.abs(1/scaleFactor);
                                     }
                                     int[] scaledXPoints = new int[currentTriangle.xpoints.length];
-                                    //System.out.println(currentTriangle.xpoints[1]);
                                     int[] scaledYPoints = new int[currentTriangle.ypoints.length];
-                                    //System.out.println(currentTriangle.ypoints[1]);
                                     for (int j = 0; j < currentTriangle.npoints; j++) {
                                         scaledXPoints[j] = (int) (currentTriangle.xpoints[j] * scaleFactor);
                                         scaledYPoints[j] = (int) (currentTriangle.ypoints[j] * scaleFactor);
@@ -287,7 +266,6 @@ public class drawingPanel extends JPanel {
                                     design.positionSettingPanel.setWidth("");
                                     design.positionSettingPanel.setHeight("");
                                 }
-                                //System.out.println("It's me");
                                 if (design.getPositionSettingPanel().getRotationAngle() != 0 && adjustMode) {
                                     currentPolygon.rotationAngle = Math.toRadians(design.positionSettingPanel.getRotationAngle());
                                 }
@@ -317,8 +295,6 @@ public class drawingPanel extends JPanel {
 
                                     double shearX = design.getPositionSettingPanel().getxShear();
                                     double shearY = design.getPositionSettingPanel().getyShear();
-//                                    System.out.println(shearX);
-//                                    System.out.println(shearY);
                                     int[] xPoints = {
                                             x + (int)(shearX * (y + height)),
                                             x + width + (int)(shearX * (y + height)),
@@ -363,9 +339,6 @@ public class drawingPanel extends JPanel {
                 } else if(moveMode){
                     lastDragPoint = null;
                 }
-//                else if(rotationAngle != 0){
-//                    rotationAngle = 0;
-//                }
             }
         });
         addMouseMotionListener(new MouseMotionAdapter() {
@@ -381,7 +354,6 @@ public class drawingPanel extends JPanel {
                     }
                 } else if(moveMode){
                     if(currentRectangle != null && lastDragPoint != null && currentRectangle.contains(e.getPoint())){
-                        //moveRect(lastDragPoint,currentRectangle,e);
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
                         currentRectangle.translate(dx, dy);
@@ -393,7 +365,6 @@ public class drawingPanel extends JPanel {
                         repaint();
                     }
                     if(currentTriangle != null && lastDragPoint != null && currentTriangle.contains(e.getPoint())){
-                        //moveTri(lastDragPoint,currentTriangle,e);
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
                         currentTriangle.translate(dx, dy);
@@ -438,8 +409,6 @@ public class drawingPanel extends JPanel {
                         int dx = e.getX() - lastDragPoint.x;
                         int dy = e.getY() - lastDragPoint.y;
 
-//                        System.out.println(dx);
-//                        System.out.println(dy);
 
                         currentPolygon.translate(dx,dy);
 
@@ -490,7 +459,6 @@ public class drawingPanel extends JPanel {
                 g2d.setTransform(oldTransform);
             } else {
                 g.setColor(poly.color);
-                //g.drawPolygon(poly);
                 g.fillPolygon(poly.xpoints,poly.ypoints,4);
             }
         }
@@ -572,9 +540,6 @@ public class drawingPanel extends JPanel {
     }
 
 
-    public boolean isRectangleMode() {
-        return rectangleMode;
-    }
 
     public void setRectangleMode(boolean rectangleMode) {
         this.rectangleMode = rectangleMode;
@@ -588,32 +553,23 @@ public class drawingPanel extends JPanel {
         this.triangleMode = triangleMode;
     }
 
-    public boolean isLineMode() {
-        return lineMode;
-    }
 
     public void setLineMode(boolean lineMode) {
         this.lineMode = lineMode;
     }
 
-    public boolean isEllipseMode() {
-        return ellipseMode;
-    }
 
     public void setEllipseMode(boolean ellipseMode) {
         this.ellipseMode = ellipseMode;
     }
 
-    public boolean isMoveMode() {
-        return moveMode;
-    }
 
     public void setMoveMode(boolean moveMode) {
         this.moveMode = moveMode;
     }
 
-    public boolean isAdjustMode() {
-        return adjustMode;
+    public void setClearObjectMode(boolean clearObjectMode) {
+        this.clearObjectMode = clearObjectMode;
     }
 
     public void setAdjustMode(boolean adjustMode) {
